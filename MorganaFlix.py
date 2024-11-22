@@ -49,7 +49,6 @@ class RandomForestMovieRecommender:
 def fetch_poster(path):
     return f"https://image.tmdb.org/t/p/w500/{path}"
 
-# Configurando o Kaggle API Key (use secrets ou armazene de forma segura
 # Caminhos dos arquivos
 features_matrix_path = 'features_matrix.npz'
 overview_embeddings_path = 'overview_embeddings.npy'
@@ -102,3 +101,8 @@ if __name__ == '__main__':
                     st.image(posters[index])
                     st.write(f"**{recommendations_indices.iloc[index]['title']}**")
                     st.write(f"Avaliação: {recommendations_indices.iloc[index]['vote_average']}")
+                    
+                    # Adicionando detalhes no expander
+                    with st.expander("Ver detalhes do filme"):
+                        st.write(f"**Resumo:** {recommendations_indices.iloc[index]['overview']}")
+                        st.write(f"**Gênero:** {recommendations_indices.iloc[index]['genres']}")
