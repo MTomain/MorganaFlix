@@ -6,6 +6,7 @@ from scipy.sparse import load_npz
 import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 import requests
+import json
 
 class RandomForestMovieRecommender:
     def __init__(self, data, features_matrix, overview_embeddings, keywords_embeddings, model, scaler):
@@ -17,7 +18,6 @@ class RandomForestMovieRecommender:
         self.overview_embeddings = overview_embeddings  # Embeddings de resumo
         self.keywords_embeddings = keywords_embeddings  # Embeddings de palavras-chave
         self.model = model  # Modelo RandomForest carregado
-        
         self.scaler = scaler  # Scaler carregado
 
     def recommend(self, movie_title, top_n=10):
@@ -50,13 +50,30 @@ def fetch_poster(path):
     return f"https://image.tmdb.org/t/p/w500/{path}"
 
 
+# Configurando o Kaggle API Key (use secrets ou armazene de forma segura)
+kaggle_json = {
+    "username": "caroltomain",
+    "key": "1e5ad3a90e7ece998df423885a91b192"
+}
+
+# Salvar o kaggle.json temporariamente para autenticação
+with open('kaggle.json', 'w') as f:
+    json.dump(kaggle_json, f)
+
+os.environ['KAGGLE_CONFIG_DIR'] = os.getcwd()
+
+# Baixar o dataset do Kaggle, caso necessário
+if not os.path.exists("TMDB_movie_dataset_v11.csv"):
+    os.system("kaggle datasets download -d arcatex/tmdb-movie-dataset -f TMDB_movie_dataset_v11.csv")
+    os.system("unzip TMDB_movie_dataset_v11.csv.zip")
+
 # Caminhos dos arquivos
-features_matrix_path = 'C:\\Users\\luisl\\Downloads\\modelo\\features_matrix.npz'
-overview_embeddings_path = 'C:\\Users\\luisl\\Downloads\\modelo\\overview_embeddings.npy'
-keywords_embeddings_path = 'C:\\Users\\luisl\\Downloads\\modelo\\keywords_embeddings.npy'
-random_forest_model_path = 'C:\\Users\\luisl\\Downloads\\modelo\\random_forest_model_v1.5.1.pkl'
-scaler_path = 'C:\\Users\\luisl\\Downloads\\modelo\\scaler_v1.5.1.pkl'
-df = pd.read_csv('C:\\Users\\luisl\\Downloads\\archive (6)\\TMDB_movie_dataset_v11.csv')
+features_matrix_path = 'features_matrix.npz'
+overview_embeddings_path = 'overview_embeddings.npy'
+keywords_embeddings_path = 'keywords_embeddings.npy'
+random_forest_model_path = 'random_forest_model_v1.5.1.pkl'
+scaler_path = 'scaler_v1.5.1.pkl'
+df = pd.read_csv('TMDB_movie_dataset_v11.csv')
 
 features_matrix = load_npz(features_matrix_path)
 overview_embeddings = np.load(overview_embeddings_path)
@@ -102,4 +119,3 @@ if __name__ == '__main__':
                     st.image(posters[index])
                     st.write(f"**{recommendations_indices.iloc[index]['title']}**")
                     st.write(f"Avaliação: {recommendations_indices.iloc[index]['vote_average']}")
-
