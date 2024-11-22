@@ -81,6 +81,14 @@ if __name__ == '__main__':
         placeholder="Ex.: The Avengers, The Batman..."
     )
 
+    # Mostrar as keywords do filme digitado
+    if input_search:
+        try:
+            movie_row = df[df['title'] == input_search].iloc[0]
+            st.write(f"**Keywords do filme '{input_search}':** {movie_row['keywords']}")
+        except IndexError:
+            st.error(f"O filme '{input_search}' não foi encontrado no dataset.")
+
     try:
         recommendations_indices = recommender.recommend(input_search, top_n=10)
         posters = [
@@ -106,3 +114,4 @@ if __name__ == '__main__':
                     with st.expander("Ver detalhes do filme"):
                         st.write(f"**Resumo:** {recommendations_indices.iloc[index]['overview']}")
                         st.write(f"**Gênero:** {recommendations_indices.iloc[index]['genres']}")
+                        st.write(f"**Keywords:** {recommendations_indices.iloc[index]['keywords']}")
