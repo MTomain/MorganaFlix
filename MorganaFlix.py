@@ -49,32 +49,14 @@ class RandomForestMovieRecommender:
 def fetch_poster(path):
     return f"https://image.tmdb.org/t/p/w500/{path}"
 
-# Configurando o Kaggle API Key (use secrets ou armazene de forma segura)
-kaggle_json = {
-    "username": "caroltomain",  # Substitua pelo seu username do Kaggle
-    "key": "1e5ad3a90e7ece998df423885a91b192"  # Substitua pela sua API Key do Kaggle
-}
-
-# Salvar o kaggle.json temporariamente para autenticação
-with open('kaggle.json', 'w') as f:
-    json.dump(kaggle_json, f)
-
-os.environ['KAGGLE_CONFIG_DIR'] = os.getcwd()
-
-# Baixar o dataset do Kaggle, caso necessário
-dataset_path = "TMDB_movie_dataset_v11.csv"
-if not os.path.exists(dataset_path):
-    st.write("Baixando o dataset do Kaggle...")
-    os.system("kaggle datasets download -d arcatex/tmdb-movie-dataset -f TMDB_movie_dataset_v11.csv --force")
-    os.system("unzip -o TMDB_movie_dataset_v11.csv.zip")
-
+# Configurando o Kaggle API Key (use secrets ou armazene de forma segura
 # Caminhos dos arquivos
 features_matrix_path = 'features_matrix.npz'
 overview_embeddings_path = 'overview_embeddings.npy'
 keywords_embeddings_path = 'keywords_embeddings.npy'
 random_forest_model_path = 'random_forest_model_v1.5.1.pkl'
 scaler_path = 'scaler_v1.5.1.pkl'
-df = pd.read_csv(dataset_path)
+df = pd.read_csv('filmes.csv')
 
 features_matrix = load_npz(features_matrix_path)
 overview_embeddings = np.load(overview_embeddings_path)
