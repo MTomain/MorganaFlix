@@ -5,3 +5,5 @@ requests
 scikit-learn
 scipy
 joblib
+kaggle
+requests
